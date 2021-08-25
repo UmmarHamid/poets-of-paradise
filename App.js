@@ -1,17 +1,23 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import MainContainerView from "./src/components/MainContainerView";
+import { Button } from 'react-native'
 
-export default function App() {
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import DashboardTabsScreen from "./src/screens/DashboardTabsScreen"
+
+
+const RootStack = createNativeStackNavigator();
+
+
+export default function App({ navigation }) {
   return (
     <NavigationContainer>
-      <MainContainerView>
-        <Text>Poets of Paradise</Text>
-      </MainContainerView>
+      <RootStack.Navigator>
+        <RootStack.Screen name="DashboardTabsScreen" component={DashboardTabsScreen}
+          options={{
+            headerShown: false,
+          }} />
+      </RootStack.Navigator>
     </NavigationContainer>
   );
 }
-
-
