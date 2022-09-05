@@ -1,55 +1,45 @@
-import React from "react";
-import { ScrollView, Text, StyleSheet, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { FlatList, Text, StyleSheet, View } from "react-native";
 import CardContainer from "../components/CardContainer";
 import MainContainerView from "../components/MainContainerView";
+import { getDatabase, ref, onValue } from "firebase/database";
+
+const db = getDatabase();
+const dbReference = ref(db, "poets/");
 
 const PoetsScreen = () => {
-  // const getPoetsList = () => {
-  //   firebase.database().ref("Poets");
-  // };
-  // console.debug(getPoetsList());
+  const [poets, setPoets] = useState(null);
+
+  useEffect(() => {
+    onValue(dbReference, (snapshot) => {
+      const data = snapshot.val();
+      setPoets(() => {
+        return data.filter((item) => {
+          return item != undefined;
+        });
+      });
+    });
+  }, []);
+
+  const Item = ({ title }) => {
+    return (
+      <View style={styles.cardWrapper}>
+        <CardContainer style={styles.card}>
+          <Text>{title}</Text>
+        </CardContainer>
+      </View>
+    );
+  };
+  const renderItem = ({ item }) => <Item title={item.name} />;
   return (
     <MainContainerView>
-      <ScrollView>
-        <View style={styles.cardrow}>
-          <CardContainer style={styles.card}>
-            {/* <Text>{getPoetsList()}</Text> */}
-          </CardContainer>
-
-          <CardContainer style={styles.card}>
-            <Text>Poet 2</Text>
-          </CardContainer>
-        </View>
-
-        <View style={styles.cardrow}>
-          <CardContainer style={styles.card}>
-            <Text>Poet 3</Text>
-          </CardContainer>
-
-          <CardContainer style={styles.card}>
-            <Text>Poet 4</Text>
-          </CardContainer>
-        </View>
-        <View style={styles.cardrow}>
-          <CardContainer style={styles.card}>
-            <Text>Poet 5</Text>
-          </CardContainer>
-
-          <CardContainer style={styles.card}>
-            <Text>Poet 6</Text>
-          </CardContainer>
-        </View>
-
-        <View style={styles.cardrow}>
-          <CardContainer style={styles.card}>
-            <Text>Poet 7</Text>
-          </CardContainer>
-
-          <CardContainer style={styles.card}>
-            <Text>Poet 8</Text>
-          </CardContainer>
-        </View>
-      </ScrollView>
+      <FlatList
+        numColumns={2}
+        style={styles.listStyles}
+        data={poets}
+        renderItem={renderItem}
+        keyExtractor={(poet) => poet.id}
+      ></FlatList>
     </MainContainerView>
   );
 };
@@ -57,17 +47,20 @@ const PoetsScreen = () => {
 export default PoetsScreen;
 
 const styles = StyleSheet.create({
-  cardrow: {
-    flexDirection: "row",
+  listStyles: {
+    flex: 1,
+  },
+  cardWrapper: {
     justifyContent: "space-between",
     minHeight: 200,
+    width: "50%",
   },
-
   card: {
     marginHorizontal: 10,
     marginVertical: 10,
     flexGrow: 1,
     alignItems: "center",
     justifyContent: "center",
+    color: "black",
   },
 });

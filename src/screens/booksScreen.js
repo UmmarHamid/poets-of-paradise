@@ -1,69 +1,66 @@
-import React from "react";
-import { ScrollView, Text, StyleSheet, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { FlatList, Text, StyleSheet, View } from "react-native";
 import CardContainer from "../components/CardContainer";
 import MainContainerView from "../components/MainContainerView";
+import { getDatabase, ref, onValue } from "firebase/database";
 
-const BooksScreen = () => {
+const db = getDatabase();
+const dbReference = ref(db, "books/");
+
+const BookScreen = () => {
+  const [books, setbooks] = useState(null);
+
+  useEffect(() => {
+    onValue(dbReference, (snapshot) => {
+      const data = snapshot.val();
+      setbooks(() => {
+        return data.filter((item) => {
+          return item != undefined;
+        });
+      });
+    });
+  }, []);
+
+  const Item = ({ title }) => {
+    return (
+      <View style={styles.cardWrapper}>
+        <CardContainer style={styles.card}>
+          <Text>{title}</Text>
+        </CardContainer>
+      </View>
+    );
+  };
+  const renderItem = ({ item }) => <Item title={item.name} />;
   return (
     <MainContainerView>
-      <ScrollView>
-        <View style={styles.cardrow}>
-          <CardContainer style={styles.card}>
-            <Text>Book 1</Text>
-          </CardContainer>
-
-          <CardContainer style={styles.card}>
-            <Text>Book 2</Text>
-          </CardContainer>
-        </View>
-
-        <View style={styles.cardrow}>
-          <CardContainer style={styles.card}>
-            <Text>Book 3</Text>
-          </CardContainer>
-
-          <CardContainer style={styles.card}>
-            <Text>Book 4</Text>
-          </CardContainer>
-        </View>
-        <View style={styles.cardrow}>
-          <CardContainer style={styles.card}>
-            <Text>Book 5</Text>
-          </CardContainer>
-
-          <CardContainer style={styles.card}>
-            <Text>Book 6</Text>
-          </CardContainer>
-        </View>
-
-        <View style={styles.cardrow}>
-          <CardContainer style={styles.card}>
-            <Text>Book 7</Text>
-          </CardContainer>
-
-          <CardContainer style={styles.card}>
-            <Text>Book 8</Text>
-          </CardContainer>
-        </View>
-      </ScrollView>
+      <FlatList
+        numColumns={2}
+        style={styles.listStyles}
+        data={books}
+        renderItem={renderItem}
+        keyExtractor={(book) => book.id}
+      ></FlatList>
     </MainContainerView>
   );
 };
 
-export default BooksScreen;
+export default BookScreen;
 
 const styles = StyleSheet.create({
-  cardrow: {
-    flexDirection: "row",
+  listStyles: {
+    flex: 1,
+  },
+  cardWrapper: {
     justifyContent: "space-between",
     minHeight: 200,
+    width: "50%",
   },
-
   card: {
     marginHorizontal: 10,
     marginVertical: 10,
     flexGrow: 1,
     alignItems: "center",
     justifyContent: "center",
+    color: "black",
   },
 });
