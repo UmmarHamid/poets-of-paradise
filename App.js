@@ -1,23 +1,12 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { Button } from 'react-native'
+import React from "react";
+import { ThemeProvider } from "react-native-elements";
+import "./config/firebase";
 
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import DashboardTabsScreen from "./src/screens/DashboardTabsScreen"
-
-
-const RootStack = createNativeStackNavigator();
-
-
+import RootNavigation from "./src/navigation";
 export default function App({ navigation }) {
   return (
-    <NavigationContainer>
-      <RootStack.Navigator>
-        <RootStack.Screen name="DashboardTabsScreen" component={DashboardTabsScreen}
-          options={{
-            headerShown: false,
-          }} />
-      </RootStack.Navigator>
-    </NavigationContainer>
+    <ThemeProvider>
+      <RootNavigation />
+    </ThemeProvider>
   );
 }
