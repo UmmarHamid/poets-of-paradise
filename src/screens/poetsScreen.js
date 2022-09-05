@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, Text, StyleSheet, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  Text,
+  StyleSheet,
+  View,
+} from "react-native";
 import CardContainer from "../components/CardContainer";
 import MainContainerView from "../components/MainContainerView";
 import { getDatabase, ref, onValue } from "firebase/database";
+import { Colors } from "../themes/colors";
 
 const db = getDatabase();
 const dbReference = ref(db, "poets/");
@@ -33,6 +40,7 @@ const PoetsScreen = () => {
   const renderItem = ({ item }) => <Item title={item.name} />;
   return (
     <MainContainerView>
+      {!poets && <ActivityIndicator size="large" color={Colors.DEEP_TEAL} />}
       <FlatList
         numColumns={2}
         style={styles.listStyles}
