@@ -46,7 +46,7 @@ const PoetsScreen = () => {
         style={styles.listStyles}
         data={poets}
         renderItem={renderItem}
-        keyExtractor={(poet) => poet.id}
+        keyExtractor={(poet) => poet.id.toString()}
       ></FlatList>
     </MainContainerView>
   );

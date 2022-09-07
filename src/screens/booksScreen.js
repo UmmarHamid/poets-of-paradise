@@ -46,7 +46,7 @@ const BookScreen = () => {
         style={styles.listStyles}
         data={books}
         renderItem={renderItem}
-        keyExtractor={(book) => book.id}
+        keyExtractor={(book) => book.id.toString()}
       ></FlatList>
     </MainContainerView>
   );
